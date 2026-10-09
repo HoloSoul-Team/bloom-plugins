@@ -1,0 +1,11 @@
+{
+  "name": "bloom-plugins",
+  "version": "0.1.0",
+  "description": "Turn an AI learning conversation into an illustrated Bloom study guide, or search existing guides. / 聊完一个知识点，一键生成 Bloom 图文学习专题；也能搜索 Bloom 上已有的专题。",
+  "mcpServers": {
+    "bloom": {
+      "httpUrl": "https://bloombook.cn/api/mcp"
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}

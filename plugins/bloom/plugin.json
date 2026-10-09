@@ -1,0 +1,30 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "bloom",
+  "version": "0.1.0",
+  "description": "Turn an AI learning conversation into an illustrated Bloom study guide, or search existing guides. / 聊完一个知识点，一键生成 Bloom 图文学习专题；也能搜索 Bloom 上已有的专题。",
+  "author": { "name": "HoloSoul Team", "url": "https://bloombook.cn" },
+  "homepage": "https://bloombook.cn",
+  "repository": "https://github.com/HoloSoul-Team/bloom-plugins",
+  "keywords": ["learning", "study", "tutorial", "education"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Bloom",
+        "shortDescription": "Turn chats into study guides",
+        "longDescription": "Finish learning something with your assistant, then turn the conversation into an illustrated, chapter-by-chapter study guide on Bloom (bloombook.cn). The guide focuses on the points you were stuck on. You can also search the study guides already published on Bloom. Generation runs on Bloom's servers after you open the link and sign in.",
+        "developerName": "HoloSoul Team",
+        "category": "Education",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://bloombook.cn",
+        "defaultPrompt": [
+          "Is there a study guide about diffusion models on Bloom?",
+          "Turn what we just discussed into a Bloom study guide"
+        ],
+        "brandColor": "#0D9488",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      }
+    }
+  }
+}
