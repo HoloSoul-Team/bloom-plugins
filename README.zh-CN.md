@@ -6,6 +6,16 @@
 
 插件本身只是接入层：生成在 Bloom 服务器上完成，插件里没有提示词，也不需要 API key。
 
+## 最简单：让你的 AI 帮你装
+
+把下面这段话发给你正在用的 AI 助手（Claude Code、Codex、ChatGPT、Gemini CLI、Cursor、WorkBuddy 等），它会自己完成安装：
+
+```
+请帮我安装 Bloom 学习插件：读取 https://raw.githubusercontent.com/HoloSoul-Team/bloom-plugins/main/INSTALL.md ，按里面的步骤判断我用的是哪个客户端，完成安装并验证。
+```
+
+装好后重启应用或新开一个对话。之后照常问学习问题就行，不用 @ 插件。
+
 ## 能做什么
 
 - **找资料：** 问 AI "Bloom 上有讲扩散模型的专题吗？"，它会搜索 Bloom 并给出链接。

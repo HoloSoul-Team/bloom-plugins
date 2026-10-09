@@ -6,6 +6,16 @@ Finish learning something with your AI assistant, then turn the conversation int
 
 The plugin is only a connector: guides are generated on Bloom's servers. It bundles no prompts and needs no API key.
 
+## Easiest: let your AI install it
+
+Send this to the AI assistant you're using (Claude Code, Codex, ChatGPT, Gemini CLI, Cursor, WorkBuddy…) and it will install Bloom itself:
+
+```
+Please install the Bloom learning plugin for me: read https://raw.githubusercontent.com/HoloSoul-Team/bloom-plugins/main/INSTALL.md, figure out which client I'm using, then install and verify it.
+```
+
+Afterwards restart the app or open a new conversation. Then just ask learning questions as usual — no need to @ the plugin.
+
 ## What it does
 
 - **Find material:** ask "Is there a guide on diffusion models on Bloom?" and your assistant searches Bloom and returns links.
