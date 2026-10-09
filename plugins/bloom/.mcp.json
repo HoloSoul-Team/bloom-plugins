@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bloom": {
+      "type": "http",
+      "url": "https://bloombook.cn/api/mcp"
+    }
+  }
+}
