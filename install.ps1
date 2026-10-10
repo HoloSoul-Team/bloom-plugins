@@ -148,3 +148,5 @@ Write-Host '还差一步:'
 $notes | ForEach-Object { Write-Host "  - $_" }
 Write-Host ''
 Write-Host '之后照常问学习问题就行（比如「我想了解一下扩散模型」），不用 @ 插件。'
+Write-Host ''
+Write-Host "好用的话给个 Star: https://github.com/$Repo"
