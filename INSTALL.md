@@ -8,13 +8,34 @@ Bloom (https://bloombook.cn) turns learning conversations into illustrated study
 - MCP endpoint: `https://bloombook.cn/api/mcp` (Streamable HTTP, **no authentication**). Tools: `search_bloom`, `create_learning_material`.
 - Skill: [`plugins/bloom/skills/bloom-study/SKILL.md`](plugins/bloom/skills/bloom-study/SKILL.md) — tells the assistant when to search and when to offer a study guide.
 
-## How to work
+## Do this first: run the installer
 
-1. **Figure out which client you are running in** (see the list below). If you can run shell commands, do the steps yourself; otherwise give the user the exact steps for their client, one at a time.
-2. **Install idempotently.** If something is already there, update it instead of failing. If an install "succeeds" but the tools still don't show up, do a clean reinstall (remove, then add again) — this fixes stale caches.
-3. **Never ask for or print API keys.** Bloom needs none.
-4. **New tools only appear in a new session.** After installing, tell the user to restart the app (or open a new conversation) — the current conversation won't see the tools.
-5. **Verify** (see below), then tell the user in one or two sentences what you installed and how to use it: just ask learning questions as usual — no need to mention Bloom or use @.
+If you can run shell commands, run this one command and you are done — do not do the per-client steps below by hand:
+
+```sh
+curl -fsSL https://bloombook.cn/install.sh | sh
+```
+
+Windows (PowerShell):
+
+```powershell
+irm https://bloombook.cn/install.ps1 | iex
+```
+
+It detects every supported client on the machine (Claude Code, Codex / ChatGPT desktop, Gemini CLI, Cursor, WorkBuddy, Claude Desktop), installs or updates Bloom for each, keeps the user's existing settings, and prints what the user still has to do. **Relay that last part of its output to the user word for word** — it is the only thing left.
+
+To install for some clients only, name them: `curl -fsSL https://bloombook.cn/install.sh | sh -s -- workbuddy cursor` (names: `claude codex gemini cursor workbuddy claude-desktop`).
+
+If you cannot run shell commands, give the user that one command to paste into their terminal.
+
+Rules:
+
+1. **Never ask for or print API keys.** Bloom needs none.
+2. **New tools only appear in a new session.** Do not try to call `search_bloom` in the current conversation to "verify" — it will not be there. Tell the user to restart the app or open a new conversation.
+3. **WorkBuddy needs one click from the user** that you cannot do: after restarting WorkBuddy, they open Connectors → Custom connector and click **Trust** on the `bloom` row. Until then the tools do not exist. Do not report the install as finished without telling them this.
+4. Afterwards, tell the user in one or two sentences how to use it: just ask learning questions as usual — no need to mention Bloom or use @.
+
+The sections below are the manual steps the installer performs. Use them only if the installer fails for a client.
 
 ## Claude Code
 
@@ -76,13 +97,19 @@ Claude Desktop's custom connectors require sign-in, so use a local bridge (needs
 
 ## WorkBuddy
 
-1. Connect the server: Settings → Connectors → Add, address `https://bloombook.cn/api/mcp` (or add `{"mcpServers":{"bloom":{"url":"https://bloombook.cn/api/mcp"}}}` to its MCP config).
-2. Add the skill: copy the folder `plugins/bloom/skills/bloom-study` from this repo into `~/.workbuddy/skills/`, then restart WorkBuddy.
+1. Merge this entry into `~/.workbuddy/mcp.json` (exactly this path and filename; Windows: `%USERPROFILE%\.workbuddy\mcp.json`). Keep the user's existing servers; create the file if it doesn't exist.
 
-```sh
-git clone --depth 1 https://github.com/HoloSoul-Team/bloom-plugins.git /tmp/bloom-plugins
-mkdir -p ~/.workbuddy/skills && cp -R /tmp/bloom-plugins/plugins/bloom/skills/bloom-study ~/.workbuddy/skills/
-```
+   ```json
+   { "mcpServers": { "bloom": { "type": "http", "url": "https://bloombook.cn/api/mcp" } } }
+   ```
+
+2. Put the skill at `~/.workbuddy/skills/bloom-study/SKILL.md`:
+
+   ```sh
+   mkdir -p ~/.workbuddy/skills/bloom-study && curl -fsSL https://raw.githubusercontent.com/HoloSoul-Team/bloom-plugins/main/plugins/bloom/skills/bloom-study/SKILL.md -o ~/.workbuddy/skills/bloom-study/SKILL.md
+   ```
+
+3. The user must do this part: **restart WorkBuddy** (it only reads the config at startup), open **Connectors** in the left sidebar → **Custom connector** (top right), and click **Trust** on the `bloom` row. It then connects and lists two tools.
 
 ## Any other client
 
@@ -104,5 +131,6 @@ mkdir -p ~/.workbuddy/skills && cp -R /tmp/bloom-plugins/plugins/bloom/skills/bl
 ## Troubleshooting
 
 - **Tools missing in the conversation:** the install only takes effect in a new session — restart the app or open a new conversation. If they're still missing, do the clean reinstall above.
+- **WorkBuddy: config is written but the tools don't exist / "No connectors installed":** WorkBuddy has not been restarted, or the user has not clicked Trust yet (Connectors → Custom connector → `bloom` row). Both are needed, then a new task.
 - **Handshake timeout / "error sending request" while `curl` works:** a proxy app (Clash, ClashX, Surge…) is routing the AI client through a server that cannot reach mainland China. Tell the user and suggest making `bloombook.cn` connect directly — e.g. add `- DOMAIN-SUFFIX,bloombook.cn,DIRECT` at the top of the Clash `rules:` list, or set `NO_PROXY=bloombook.cn` before starting the client. Ask before editing the user's proxy configuration.
 - **"请求太频繁 / Too many requests":** wait a while and try again; don't retry in a loop.

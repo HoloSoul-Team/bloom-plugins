@@ -6,35 +6,38 @@ Finish learning something with your AI assistant, then turn the conversation int
 
 The plugin is only a connector: guides are generated on Bloom's servers. It bundles no prompts and needs no API key.
 
-## Easiest: let your AI install it
+## Install: one command
 
-Send this to the AI assistant you're using (Claude Code, Codex, ChatGPT, Gemini CLI, Cursor, WorkBuddy…) and it will install Bloom itself:
+macOS / Linux — paste into Terminal:
 
 ```
-Please install the Bloom learning plugin for me: read https://raw.githubusercontent.com/HoloSoul-Team/bloom-plugins/main/INSTALL.md, figure out which client I'm using, then install and verify it.
+curl -fsSL https://bloombook.cn/install.sh | sh
 ```
 
-Afterwards restart the app or open a new conversation. Then just ask learning questions as usual — no need to @ the plugin.
+Windows — paste into PowerShell:
+
+```
+irm https://bloombook.cn/install.ps1 | iex
+```
+
+It finds the AI clients on your computer (Claude Code, Codex / ChatGPT desktop, Gemini CLI, Cursor, WorkBuddy, Claude Desktop), connects each one to Bloom, and tells you the one thing left to do — usually just restarting the app. Your existing settings are kept, and it is safe to run again.
+
+Then ask learning questions as usual — no need to @ the plugin.
+
+Prefer not to open a terminal? Send this to your AI assistant and it will run the install for you:
+
+```
+Please install the Bloom learning plugin for me: run `curl -fsSL https://bloombook.cn/install.sh | sh` in a terminal, then tell me what its output says is left to do.
+```
 
 ## What it does
 
 - **Find material:** ask "Is there a guide on diffusion models on Bloom?" and your assistant searches Bloom and returns links.
 - **Create a study guide:** after working through a topic, say "make this into study material". Your assistant writes up the conversation — what you asked, where you got stuck, what you already understand — and gives you a link. Open it, sign in to Bloom and confirm; the guide is ready in about 20–40 minutes and you get notified. It focuses on the points you were stuck on.
 
-## Supported clients
+## Manual install
 
-| Client | How to install |
-|---|---|
-| [Claude Code](#claude-code) | Plugin marketplace (two commands) |
-| [Codex](#codex) | Plugin marketplace (two commands) |
-| [ChatGPT desktop](#chatgpt-desktop) | Plugins directory, after adding the marketplace |
-| [Gemini CLI](#gemini-cli) | One command |
-| [Cursor](#cursor) | One-click link or config file |
-| [WorkBuddy](#workbuddy) | Connector + skill folder |
-| [Claude Desktop](#claude-desktop) | Config file (local bridge) |
-| [Other MCP clients](#other-mcp-clients) | MCP endpoint |
-
-The plugin versions (Claude Code, Codex, ChatGPT, Gemini CLI) also include usage guidance, so your assistant searches Bloom when you look for material and offers once to create a guide when you've finished a topic. With the config-file options you get the same tools; just ask your assistant to use Bloom.
+The command above covers all of these. Use the steps below only if you want to set up one client by hand.
 
 ### Claude Code
 
@@ -81,32 +84,19 @@ gemini extensions install https://github.com/HoloSoul-Team/bloom-plugins
 
 ### WorkBuddy
 
-1. **Connect the server:** Settings → Connectors → Add, with the address `https://bloombook.cn/api/mcp`. If you edit the MCP config file instead, add:
+1. Open **Connectors** in the left sidebar → **Custom connector** (top right) → **Add MCP**, and add:
 
    ```json
    {
      "mcpServers": {
-       "bloom": { "url": "https://bloombook.cn/api/mcp" }
+       "bloom": { "type": "http", "url": "https://bloombook.cn/api/mcp" }
      }
    }
    ```
 
-2. **Add the skill (optional, recommended):** copy the folder [`plugins/bloom/skills/bloom-study`](plugins/bloom/skills/bloom-study) into `~/.workbuddy/skills/` and restart WorkBuddy.
+   This is the file `~/.workbuddy/mcp.json`. Click **Trust** on the `bloom` row.
 
-   macOS / Linux:
-
-   ```
-   git clone --depth 1 https://github.com/HoloSoul-Team/bloom-plugins.git /tmp/bloom-plugins
-   mkdir -p ~/.workbuddy/skills && cp -R /tmp/bloom-plugins/plugins/bloom/skills/bloom-study ~/.workbuddy/skills/
-   ```
-
-   Windows (PowerShell):
-
-   ```
-   git clone --depth 1 https://github.com/HoloSoul-Team/bloom-plugins.git $env:TEMP\bloom-plugins
-   New-Item -ItemType Directory -Force "$HOME\.workbuddy\skills" | Out-Null
-   Copy-Item -Recurse "$env:TEMP\bloom-plugins\plugins\bloom\skills\bloom-study" "$HOME\.workbuddy\skills\"
-   ```
+2. Copy the folder [`plugins/bloom/skills/bloom-study`](plugins/bloom/skills/bloom-study) into `~/.workbuddy/skills/` and restart WorkBuddy.
 
 ### Claude Desktop
 
@@ -131,6 +121,7 @@ MCP endpoint: `https://bloombook.cn/api/mcp` (Streamable HTTP, no authentication
 
 ## Troubleshooting
 
+- **WorkBuddy: installed but the tools aren't there:** restart WorkBuddy, then open Connectors → Custom connector and click **Trust** on the `bloom` row. WorkBuddy only reads the config at startup and won't connect a new server until you trust it.
 - **Tools don't show up / "error sending request" behind a proxy:** some proxy tools route each app differently, and requests to `bloombook.cn` from your AI client may fail even though your browser works. Set `bloombook.cn` to connect directly in your proxy rules, or add it to `NO_PROXY` (for example `NO_PROXY=localhost,127.0.0.1,bloombook.cn`) before starting the client.
 - **The link expired:** links are valid for 7 days. Ask your assistant to create a new one.
 
